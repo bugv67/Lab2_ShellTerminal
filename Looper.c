@@ -7,22 +7,24 @@
 void handler(int sig)
 {
     printf("\nRecieved Signal : %s\n", strsignal(sig));
-    if (sig == SIGTSTP)
+    fflush(stdout);
+
+    if (sig == SIGTSTP) // will frezze the process
     {
-        signal(SIGTSTP, SIG_DFL);
+        signal(SIGCONT, handler);
     }
-    else if (sig == SIGCONT)
+    else if (sig == SIGCONT) // will wake up
     {
-        signal(SIGCONT, SIG_DFL);
+        signal(SIGTSTP, handler);
     }
-    signal(sig, SIG_DFL);
-    raise(sig);
+    signal(sig, SIG_DFL); // restore default handler for the signal
+    raise(sig);           // re send the signal to actally do it
 }
 
 int main(int argc, char **argv)
 {
-
     printf("Starting the program\n");
+    // the signals the progran should handle!
     signal(SIGINT, handler);
     signal(SIGTSTP, handler);
     signal(SIGCONT, handler);
