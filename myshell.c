@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <linux/limits.h>
+#include "LineParser.h"
+#include <sys/wait.h>
+
+void execute(cmdLine *pCmdLine)
+{
+    int pid = fork();
+    if (pid == -1)
+    {
+        perror("fork failed");
+        return;
+    }
+    if (pid == 0)
+    {
+        // running the executa
+        if (execvp(pCmdLine->arguments[0], pCmdLine->arguments))
+        { // search for the excute in the system's PATH
+            perror("execv error");
+            exit(1);
+        }
+    }
+    else
+    { // parent process
+        if (pCmdLine->blocking)
+        {
+            waitpid(pid, NULL, 0);
+        }
+    }
+}
+
+int main(int argc, char **argv)
+{
+    while (1)
+    {
+        char path[PATH_MAX];
+        char input[2048];
+        if (getcwd(path, PATH_MAX) == NULL)
+        {
+            perror("getcwd error");
+            return 1;
+        }
+        printf("%s> ", path);
+        if (fgets(input, 2048, stdin) == NULL)
+        {
+            perror("fgets error");
+            return 1;
+        }
+        if (strncmp(input, "quit", 4) == 0)
+        {
+            break;
+        }
+        cmdLine *cmd = parseCmdLines(input);
+        if (cmd == NULL)
+        {
+            continue;
+        }
+        execute(cmd); // execute the command
+        freeCmdLines(cmd);
+    }
+    return 0;
+}
