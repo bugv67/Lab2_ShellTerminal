@@ -6,6 +6,21 @@
 #include "LineParser.h"
 #include <sys/wait.h>
 
+int debug = 0; // 0 - no debug, 1 - debug mode on
+void printDebug(int pid, cmdLine *pCmdLine)
+{
+    fprintf(stderr, "PID: %d\n", pid);
+    fprintf(stderr, "Executing file name: %s\n", pCmdLine->arguments[0]);
+
+    if (pCmdLine->blocking)
+    {
+        fprintf(stderr, "Foreground/Background: Foreground\n");
+    }
+    else
+    {
+        fprintf(stderr, "Foreground/Background: Background\n");
+    }
+}
 void execute(cmdLine *pCmdLine)
 {
     int pid = fork();
@@ -25,6 +40,7 @@ void execute(cmdLine *pCmdLine)
     }
     else
     { // parent process
+        printDebug(pid, pCmdLine);
         if (pCmdLine->blocking)
         {
             waitpid(pid, NULL, 0);
@@ -52,6 +68,10 @@ int main(int argc, char **argv)
         if (strncmp(input, "quit", 4) == 0)
         {
             break;
+        }
+        if (strstr(input, "-d") != NULL)
+        { // need to turn on debug mode
+            debug = 1;
         }
         cmdLine *cmd = parseCmdLines(input);
         if (cmd == NULL)
