@@ -6,24 +6,21 @@
 
 int main(int argc, char **argv)
 {
-    // בדיקה שהעברת הודעה ב-argv[1]
     if (argc < 2)
     {
         fprintf(stderr, "Usage: %s <message>\n", argv[0]);
         return 1;
     }
 
-    int pipefd[2]; // מערך שיחזיק את שני הקצוות: [0] לקריאה, [1] לכתיבה
+    int pipefd[2];
     char buffer[1024];
 
-    // 1. יצירת הצינור - חייב לקרות לפני ה-fork!
     if (pipe(pipefd) == -1)
     {
         perror("pipe failed");
         return 1;
     }
 
-    // 2. יצירת תהליך בן
     int pid = fork();
 
     if (pid == -1)
