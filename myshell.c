@@ -35,7 +35,7 @@ void execute(cmdLine *pCmdLine)
         if (execvp(pCmdLine->arguments[0], pCmdLine->arguments))
         { // search for the excute in the system's PATH
             perror("execv error");
-            exit(1);
+            _exit(1);
         }
     }
     else

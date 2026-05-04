@@ -1,21 +1,17 @@
-# הגדרת הקומפיילר ודגלי הקימפול (אזהרות ודיבאג)
 CC = gcc
-CFLAGS = -g -Wall
+CFLAGS = -g -Wall -m32
 
-# שם תוכנית היעד (הקובץ המריץ הסופי)
-TARGET = myshell
+all: myshell looper printers
 
-# רשימת קבצי האובייקט שייווצרו מקבצי ה-C
-OBJS = LineParser.o Looper.o Printers.o
+myshell: myshell.o LineParser.o
+	$(CC) $(CFLAGS) -o myshell myshell.o LineParser.o
 
-# המטרה הראשית שתרוץ כשנקליד רק "make"
-all: $(TARGET)
+looper: Looper.o
+	$(CC) $(CFLAGS) -o looper Looper.o
 
-# חוק בניית התוכנית הסופית מתוך קבצי האובייקט
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+printers: Printers.o
+	$(CC) $(CFLAGS) -o printers Printers.o
 
-# חוקי בנייה עבור כל קובץ מקור בנפרד
 LineParser.o: LineParser.c LineParser.h
 	$(CC) $(CFLAGS) -c LineParser.c
 
@@ -25,6 +21,10 @@ Looper.o: Looper.c
 Printers.o: Printers.c
 	$(CC) $(CFLAGS) -c Printers.c
 
-# פקודת ניקוי (make clean) למחיקת התוצרים וקימפול מחדש
+myshell.o: myshell.c LineParser.h
+	$(CC) $(CFLAGS) -c myshell.c
+
+.PHONY: clean all
+
 clean:
-	rm -f *.o $(TARGET)
+	rm -f *.o looper printers myshell
