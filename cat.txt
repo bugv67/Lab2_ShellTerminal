@@ -1,0 +1,16 @@
+total 128
+-rw-r--r-- 1 noa1weiss noa1weiss  3864 May  3 19:25 LineParser.c
+-rw-r--r-- 1 noa1weiss noa1weiss  1299 May  3 19:25 LineParser.h
+-rw-r--r-- 1 noa1weiss noa1weiss  9120 May  4 11:45 LineParser.o
+-rw-r--r-- 1 noa1weiss noa1weiss   855 May  4 11:28 Looper.c
+-rw-r--r-- 1 noa1weiss noa1weiss  5520 May  4 11:45 Looper.o
+-rw-r--r-- 1 noa1weiss noa1weiss   311 May  3 19:27 Printers.c
+-rw-r--r-- 1 noa1weiss noa1weiss  3336 May  4 11:45 Printers.o
+-rw-r--r-- 1 noa1weiss noa1weiss     0 May  4 11:47 abc.txt
+-rw-r--r-- 1 noa1weiss noa1weiss     0 May  4 11:49 cat.txt
+-rwxr-xr-x 1 noa1weiss noa1weiss 17788 May  4 11:45 looper
+-rw-r--r-- 1 noa1weiss noa1weiss   566 May  4 09:38 makefile
+-rwxr-xr-x 1 noa1weiss noa1weiss 28108 May  4 11:45 myshell
+-rw-r--r-- 1 noa1weiss noa1weiss  4961 May  4 11:44 myshell.c
+-rw-r--r-- 1 noa1weiss noa1weiss 11248 May  4 11:45 myshell.o
+-rwxr-xr-x 1 noa1weiss noa1weiss 16340 May  4 11:45 printers
