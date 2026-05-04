@@ -6,6 +6,7 @@
 #include "LineParser.h"
 #include <sys/wait.h>
 #include <signal.h>
+#include <fcntl.h>
 
 int debug = 0; // 0 - no debug, 1 - debug mode on
 void printDebug(int pid, cmdLine *pCmdLine)
