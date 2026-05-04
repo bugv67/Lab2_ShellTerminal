@@ -105,6 +105,41 @@ void execute(cmdLine *pCmdLine)
     }
     if (pid == 0)
     {
+        // input redirection
+        if (pCmdLine->inputRedirect != NULL)
+        {
+            int fd_in = open(pCmdLine->inputRedirect, O_RDONLY);
+            if (fd_in == -1)
+            {
+                perror("failed to open input file");
+                _exit(1);
+            }
+            if (dup2(fd_in, STDIN_FILENO) == -1)
+            {
+                perror("dup2 input failed");
+                _exit(1);
+            }
+            close(fd_in);
+        }
+
+        // output redirction
+        if (pCmdLine->outputRedirect != NULL)
+        {
+
+            int fd_out = open(pCmdLine->outputRedirect, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if (fd_out == -1)
+            {
+                perror("failed to open output file");
+                _exit(1);
+            }
+            if (dup2(fd_out, STDOUT_FILENO) == -1)
+            {
+                perror("dup2 output failed");
+                _exit(1);
+            }
+            close(fd_out);
+        }
+
         // running the executa
         if (execvp(pCmdLine->arguments[0], pCmdLine->arguments))
         { // search for the excute in the system's PATH
