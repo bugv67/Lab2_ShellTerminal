@@ -5,6 +5,7 @@
 #include <linux/limits.h>
 #include "LineParser.h"
 #include <sys/wait.h>
+#include <signal.h>
 
 int debug = 0; // 0 - no debug, 1 - debug mode on
 void printDebug(int pid, cmdLine *pCmdLine)
@@ -23,16 +24,76 @@ void printDebug(int pid, cmdLine *pCmdLine)
 }
 void execute(cmdLine *pCmdLine)
 {
+
     if (strcmp(pCmdLine->arguments[0], "cd") == 0)
     {
-        if (chdir(pCmdLine->arguments[1]) == -1) // change curr direc
+        if (chdir(pCmdLine->arguments[1]) == -1)
         {
             perror("cd failed");
+            return;
         }
-        if (debug)
+        printf("Changed directory to %s\n", pCmdLine->arguments[1]);
+        return;
+    }
+    else if (strcmp(pCmdLine->arguments[0], "stop") == 0)
+    {
+        if (pCmdLine->argCount < 2)
         {
-            printf("Changed directory to %s\n", pCmdLine->arguments[1]);
+            fprintf(stderr, " missing process id\n");
+            return;
         }
+        int target_pid = atoi(pCmdLine->arguments[1]);
+
+        if (kill(target_pid, SIGTSTP) == -1)
+        {
+            perror("stop failed");
+        }
+        printf("Stopped process with PID %d\n", target_pid);
+        return;
+    }
+    else if (strcmp(pCmdLine->arguments[0], "wakeup") == 0)
+    {
+        if (pCmdLine->argCount < 2)
+        {
+            fprintf(stderr, "stop: missing process id\n");
+            return;
+        }
+        int target_pid = atoi(pCmdLine->arguments[1]);
+        if (kill(target_pid, SIGCONT) == -1)
+        {
+            perror("wakeup failed");
+        }
+        printf("Woke up process with PID %d\n", target_pid);
+        return;
+    }
+    else if (strcmp(pCmdLine->arguments[0], "ice") == 0)
+    {
+        if (pCmdLine->argCount < 2)
+        {
+            fprintf(stderr, "missing process id\n");
+            return;
+        }
+        int target_pid = atoi(pCmdLine->arguments[1]);
+        if (kill(target_pid, SIGINT) == -1)
+        {
+            perror("ice failed");
+        }
+        printf("Iced process with PID %d\n", target_pid);
+        return;
+    }
+    else if (strcmp(pCmdLine->arguments[0], "nuke") == 0)
+    {
+        if (pCmdLine->argCount < 2)
+        {
+            fprintf(stderr, " missing process id\n");
+            return;
+        }
+        int target_pid = atoi(pCmdLine->arguments[1]);
+        if (kill(-target_pid, SIGKILL) == -1)
+        {
+            perror("nuke failed");
+        }
+        printf("Nuked process with PID %d and all its children\n", target_pid);
         return;
     }
 
