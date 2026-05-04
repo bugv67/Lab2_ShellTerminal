@@ -7,6 +7,8 @@
 void handler(int sig)
 {
     printf("\nRecieved Signal : %s\n", strsignal(sig));
+    fflush(stdout); // to make sure the message is printed
+
     signal(sig, SIG_DFL); // restore default handler for the signal
     raise(sig);           // re send the signal to actally do it
 

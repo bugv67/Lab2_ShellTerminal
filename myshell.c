@@ -23,6 +23,19 @@ void printDebug(int pid, cmdLine *pCmdLine)
 }
 void execute(cmdLine *pCmdLine)
 {
+    if (strcmp(pCmdLine->arguments[0], "cd") == 0)
+    {
+        if (chdir(pCmdLine->arguments[1]) == -1) // change curr direc
+        {
+            perror("cd failed");
+        }
+        if (debug)
+        {
+            printf("Changed directory to %s\n", pCmdLine->arguments[1]);
+        }
+        return;
+    }
+
     int pid = fork();
     if (pid == -1)
     {
@@ -35,6 +48,7 @@ void execute(cmdLine *pCmdLine)
         if (execvp(pCmdLine->arguments[0], pCmdLine->arguments))
         { // search for the excute in the system's PATH
             perror("execv error");
+            freeCmdLines(pCmdLine);
             _exit(1);
         }
     }
